@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complete Web Page</title>
+
+    <style>
+        /* Background Styling */
+        body {
+            font-family: Arial;
+            background-color: #f2f2f2;
+            margin: 0;
+        }
+
+        /* ID Example */
+        #header {
+            background-color: darkblue;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Class Example + Box Model */
+        .box {
+            background-color: white;
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #ccc;
+        }
+
+        /* Image Styling */
+        .img-style {
+            width: 250px;
+            border: 3px solid black;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: lightblue;
+        }
+
+        /* Form Styling */
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: blue;
+            color: white;
+            border: none;
+        }
+
+        /* Hover Effect */
+        button:hover {
+            background-color: darkblue;
+        }
+
+        a {
+            color: blue;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: red;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Header -->
+<div id="header">
+    <h1>My Complete Webpage</h1>
+    <p>HTML and CSS Example</p>
+</div>
+
+<!-- Image Section -->
+<div class="box">
+    <h2>Image</h2>
+    <img src="https://via.placeholder.com/250" class="img-style">
+</div>
+
+<!-- Table Section -->
+<div class="box">
+    <h2>Student Table</h2>
+    <table>
+        <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Course</th>
+        </tr>
+        <tr>
+            <td>101</td>
+            <td>Rahul</td>
+            <td>BCA</td>
+        </tr>
+        <tr>
+            <td>102</td>
+            <td>Priya</td>
+            <td>BBA</td>
+        </tr>
+    </table>
+</div>
+
+<!-- Form Section -->
+<div class="box">
+    <h2>Registration Form</h2>
+    <form>
+        Name:
+        <input type="text">
+
+        Email:
+        <input type="email">
+
+        Course:
+        <select>
+            <option>BCA</option>
+            <option>BBA</option>
+            <option>B.Tech</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<!-- Links Section -->
+<div class="box">
+    <h2>Useful Links</h2>
+    <a href="https://www.google.com" target="_blank">Google</a><br>
+    <a href="https://www.wikipedia.org" target="_blank">Wikipedia</a>
+</div>
+
+</body>
+</html>
