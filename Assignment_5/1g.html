@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Days Until Birthday</title>
+</head>
+<body>
+
+<h2>Days Left Until Birthday</h2>
+<button onclick="daysToBirthday()">Check</button>
+<p id="output"></p>
+
+<script>
+function daysToBirthday() {
+    var today = new Date();
+    var year = today.getFullYear();
+
+    // Example Birthday: 15 August
+    var birthday = new Date(year, 7, 15);
+
+    if (today > birthday) {
+        birthday = new Date(year + 1, 7, 15);
+    }
+
+    var diff = birthday - today;
+    var daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+    document.getElementById("output").innerHTML =
+        "Days left until Birthday: " + daysLeft;
+}
+</script>
+
+</body>
+</html>

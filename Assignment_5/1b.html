@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Current Date</title>
+</head>
+<body>
+
+<h2>Current Date Formats</h2>
+<button onclick="showDate()">Show Date</button>
+<p id="output"></p>
+
+<script>
+function showDate() {
+    var today = new Date();
+
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+
+    document.getElementById("output").innerHTML =
+        mm + "-" + dd + "-" + yyyy + "<br>" +
+        mm + "/" + dd + "/" + yyyy + "<br>" +
+        dd + "-" + mm + "-" + yyyy + "<br>" +
+        dd + "/" + mm + "/" + yyyy;
+}
+</script>
+
+</body>
+</html>

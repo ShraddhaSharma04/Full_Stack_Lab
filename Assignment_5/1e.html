@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>1st January Sunday</title>
+</head>
+<body>
+
+<h2>1st January is Sunday</h2>
+<button onclick="findSunday(2000,2025)">Check (2000-2025)</button>
+<p id="output"></p>
+
+<script>
+function findSunday(year1, year2) {
+    var result = "";
+    for (var year = year1; year <= year2; year++) {
+        var d = new Date(year, 0, 1);
+        if (d.getDay() === 0) {
+            result += year + "<br>";
+        }
+    }
+    document.getElementById("output").innerHTML = result;
+}
+</script>
+
+</body>
+</html>

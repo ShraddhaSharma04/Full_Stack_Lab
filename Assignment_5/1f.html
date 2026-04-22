@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Days Until Christmas</title>
+</head>
+<body>
+
+<h2>Days Left Until Christmas</h2>
+<button onclick="daysToChristmas()">Check</button>
+<p id="output"></p>
+
+<script>
+function daysToChristmas() {
+    var today = new Date();
+    var year = today.getFullYear();
+    var christmas = new Date(year, 11, 25);
+
+    if (today > christmas) {
+        christmas = new Date(year + 1, 11, 25);
+    }
+
+    var diff = christmas - today;
+    var daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+    document.getElementById("output").innerHTML =
+        "Days left until Christmas: " + daysLeft;
+}
+</script>
+
+</body>
+</html>

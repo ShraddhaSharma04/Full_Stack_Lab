@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stopwatch</title>
+</head>
+<body align="center">
+
+<h2>Stopwatch</h2>
+
+<div id="time" style="font-size:40px;">00:00:00</div><br>
+
+<button onclick="start()">START</button>
+<button onclick="pause()">PAUSE</button>
+<button onclick="reset()">RESET</button>
+
+<script>
+let h = 0, m = 0, s = 0;
+let timer;
+
+function start() {
+    timer = setInterval(function () {
+        s++;
+        if (s == 60) {
+            s = 0;
+            m++;
+        }
+        if (m == 60) {
+            m = 0;
+            h++;
+        }
+        document.getElementById("time").innerHTML =
+            (h<10?"0":"")+h + ":" +
+            (m<10?"0":"")+m + ":" +
+            (s<10?"0":"")+s;
+    }, 1000);
+}
+
+function pause() {
+    clearInterval(timer);
+}
+
+function reset() {
+    clearInterval(timer);
+    h = m = s = 0;
+    document.getElementById("time").innerHTML = "00:00:00";
+}
+</script>
+
+</body>
+</html>

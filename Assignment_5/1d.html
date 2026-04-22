@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Days Passed</title>
+</head>
+<body>
+
+<h2>Days Passed Since Beginning of Year</h2>
+<button onclick="checkDays()">Check</button>
+<p id="output"></p>
+
+<script>
+function days_passed(date) {
+    var start = new Date(date.getFullYear(), 0, 1);
+    var diff = date - start;
+    return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
+function checkDays() {
+    var result1 = days_passed(new Date(2015, 0, 15));
+    var result2 = days_passed(new Date(2015, 11, 14));
+
+    document.getElementById("output").innerHTML =
+        "Result 1: " + result1 + "<br>" +
+        "Result 2: " + result2;
+}
+</script>
+
+</body>
+</html>
