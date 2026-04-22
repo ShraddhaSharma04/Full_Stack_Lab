@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON Creation, Parsing & Display</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        #output {
+            margin: 20px auto;
+            padding: 20px;
+            width: 300px;
+            background-color: white;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: blue;
+            color: white;
+            border: none;
+        }
+        button:hover {
+            background-color: darkblue;
+        }
+    </style>
+</head>
+<body>
+<h2>JSON Example</h2>
+<button onclick="handleJSON()">Create & Display JSON</button>
+<div id="output"></div>
+<script>
+function handleJSON() {
+    try {
+        let product = {
+            productID: 101,
+            productName: "Laptop",
+            price: 50000,
+            inStock: true
+        };
+        let jsonString = JSON.stringify(product);
+        console.log("JSON String:", jsonString);
+        let parsedData = JSON.parse(jsonString);
+        document.getElementById("output").innerHTML =
+            "Product ID: " + parsedData.productID + "<br>" +
+            "Product Name: " + parsedData.productName + "<br>" +
+            "Price: ₹" + parsedData.price + "<br>" +
+            "In Stock: " + parsedData.inStock;
+    } catch (error) {
+        console.error("JSON Error:", error);
+        document.getElementById("output").innerHTML =
+            "<span style='color:red;'>Error parsing JSON!</span>";
+    }
+}
+</script>
+</body>
+</html>

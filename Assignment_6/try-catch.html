@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration Form</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f2f2f2;
+        }
+        .form-box {
+            width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border: 1px solid #ccc;
+        }
+        h2 {
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px;
+            width: 100%;
+            background-color: blue;
+            color: white;
+            border: none;
+        }
+        button:hover {
+            background-color: darkblue;
+        }
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="form-box">
+    <h2>Student Registration</h2>
+    <form onsubmit="validateForm(event)">
+        <input type="text" id="name" placeholder="Enter Name">
+        <input type="text" id="email" placeholder="Enter Email">
+        <input type="number" id="age" placeholder="Enter Age">
+        <input type="password" id="password" placeholder="Enter Password">
+        <button type="submit">Register</button>
+    </form>
+    <p id="message"></p>
+</div>
+<script>
+function validateForm(event) {
+    event.preventDefault();
+    let message = document.getElementById("message");
+    message.innerHTML = "";
+    try {
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+        let age = document.getElementById("age").value;
+        let password = document.getElementById("password").value;
+        if (name.trim() === "") {
+            throw "Name should not be empty.";
+        }
+        if (!email.includes("@")) {
+            throw "Email must contain '@'.";
+        }
+        if (age < 18 || age > 30) {
+            throw "Age must be between 18 and 30.";
+        }
+        if (password.length < 6) {
+            throw "Password must be at least 6 characters.";
+        }
+        message.style.color = "green";
+        message.innerHTML = "Registration Successful!";
+    } catch (error) {
+        message.style.color = "red";
+        message.innerHTML = error;
+        console.error("Validation Error:", error);
+    } finally {
+        console.log("Validation process completed.");
+    }
+}
+</script>
+</body>
+</html>
