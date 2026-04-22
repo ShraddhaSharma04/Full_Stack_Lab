@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Math Functions Program</title>
+</head>
+<body>
+
+    <h2>JavaScript Math Functions</h2>
+
+    <label>Enter First Number:</label>
+    <input type="number" id="num1"><br><br>
+
+    <label>Enter Second Number:</label>
+    <input type="number" id="num2"><br><br>
+
+    <button onclick="calculate()">Calculate</button>
+
+    <h3>Results:</h3>
+    <p id="result"></p>
+
+    <script>
+        function calculate() {
+
+            var n1 = Number(document.getElementById("num1").value);
+            var n2 = Number(document.getElementById("num2").value);
+
+            var squareRoot = Math.sqrt(n1);
+            var power = Math.pow(n1, n2);
+            var maximum = Math.max(n1, n2);
+            var minimum = Math.min(n1, n2);
+            var absDifference = Math.abs(n1 - n2);
+
+            document.getElementById("result").innerHTML =
+                "Square Root of First Number: " + squareRoot + "<br>" +
+                "Power (First ^ Second): " + power + "<br>" +
+                "Maximum: " + maximum + "<br>" +
+                "Minimum: " + minimum + "<br>" +
+                "Absolute Difference: " + absDifference;
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Object</title>
+</head>
+<body>
+
+    <h2>Student Result</h2>
+    <p id="output"></p>
+
+    <script>
+        // Creating student object
+        var student = {
+            name: "Shraddha",
+            rollNumber: 62,
+            course: "Btech",
+            marks: 420,   // out of 500
+
+            // Method to calculate result
+            getResult: function() {
+                var percentage = (this.marks / 500) * 100;
+
+                var result;
+                if (percentage >= 40) {
+                    result = "Passed";
+                } else {
+                    result = "Failed";
+                }
+
+                return "Name: " + this.name + "<br>" +
+                       "Roll Number: " + this.rollNumber + "<br>" +
+                       "Course: " + this.course + "<br>" +
+                       "Marks: " + this.marks + "/500<br>" +
+                       "Percentage: " + percentage.toFixed(2) + "%<br>" +
+                       "Result: " + result;
+            }
+        };
+
+        // Displaying result
+        document.getElementById("output").innerHTML = student.getResult();
+    </script>
+
+</body>
+</html>

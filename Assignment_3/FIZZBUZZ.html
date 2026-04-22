@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FizzBuzz Rows</title>
+</head>
+<body>
+
+    <h2>FizzBuzz from 1 to 50 </h2>
+    <pre id="output"></pre>
+
+    <script>
+        var result = "";
+
+        for (var i = 1; i <= 50; i++) {
+
+            if (i % 3 === 0 && i % 5 === 0) {
+                result += "FIZZBUZZ\t";
+            }
+            else if (i % 3 === 0) {
+                result += "FIZZ\t";
+            }
+            else if (i % 5 === 0) {
+                result += "BUZZ\t";
+            }
+            else {
+                result += i + "\t";
+            }
+
+            // After every 10 numbers, go to next line
+            if (i % 10 === 0) {
+                result += "\n";
+            }
+        }
+
+        document.getElementById("output").textContent = result;
+    </script>
+
+</body>
+</html>

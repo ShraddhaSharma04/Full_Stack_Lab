@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Area of Rectangle</title>
+</head>
+<body>
+
+    <h2>Calculate Area of Rectangle</h2>
+
+    <label>Enter Length:</label>
+    <input type="number" id="length"><br><br>
+
+    <label>Enter Breadth:</label>
+    <input type="number" id="breadth"><br><br>
+
+    <button onclick="showArea()">Calculate Area</button>
+
+    <p id="result"></p>
+
+    <script>
+        // Function that returns area
+        function calculateArca(length, breadth) {
+            return length * breadth;
+        }
+
+        // Function to call calculateArca and display result
+        function showArea() {
+            var l = Number(document.getElementById("length").value);
+            var b = Number(document.getElementById("breadth").value);
+
+            var area = calculateArca(l, b);
+
+            document.getElementById("result").innerHTML =
+                "Area of Rectangle: " + area;
+        }
+    </script>
+
+</body>
+</html>
