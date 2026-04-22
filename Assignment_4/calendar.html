@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calendar Month</title>
+
+    <script>
+        function showCalendar() {
+
+            var month = document.getElementById("month").value;
+            var year = document.getElementById("year").value;
+
+            var date = new Date(year, month, 1);
+            var firstDay = date.getDay();
+            var daysInMonth = new Date(year, parseInt(month) + 1, 0).getDate();
+
+            var calendar = "<table border='1' align='center'>";
+            calendar += "<tr>";
+            calendar += "<th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>";
+            calendar += "</tr><tr>";
+
+            // Empty spaces before first day
+            for (var i = 0; i < firstDay; i++) {
+                calendar += "<td></td>";
+            }
+
+            // Add dates
+            for (var day = 1; day <= daysInMonth; day++) {
+
+                if ((firstDay + day - 1) % 7 === 0 && day !== 1) {
+                    calendar += "</tr><tr>";
+                }
+
+                calendar += "<td>" + day + "</td>";
+            }
+
+            calendar += "</tr></table>";
+
+            document.getElementById("calendar").innerHTML = calendar;
+        }
+    </script>
+</head>
+
+<body>
+
+    <h2 align="center">Calendar Generator</h2>
+
+    <!-- Month Combo Box -->
+    <select id="month">
+        <option value="0">January</option>
+        <option value="1">February</option>
+        <option value="2">March</option>
+        <option value="3">April</option>
+        <option value="4">May</option>
+        <option value="5">June</option>
+        <option value="6">July</option>
+        <option value="7">August</option>
+        <option value="8">September</option>
+        <option value="9">October</option>
+        <option value="10">November</option>
+        <option value="11">December</option>
+    </select>
+
+    <!-- Year Combo Box -->
+    <select id="year">
+        <option>2024</option>
+        <option>2025</option>
+        <option>2026</option>
+        <option>2027</option>
+        <option>2028</option>
+    </select>
+
+    <br><br>
+
+    <button onclick="showCalendar()">Show Calendar</button>
+
+    <br><br>
+
+    <div id="calendar" align="center"></div>
+
+</body>
+</html>

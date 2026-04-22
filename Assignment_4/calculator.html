@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple Calculator</title>
+<script>
+function calculate() {
+    let a = parseFloat(document.getElementById("num1").value);
+    let b = parseFloat(document.getElementById("num2").value);
+    document.getElementById("add").innerHTML = "Addition: " + (a + b);
+    document.getElementById("sub").innerHTML = "Subtraction: " + (a - b);
+    document.getElementById("mul").innerHTML = "Multiplication: " + (a * b);
+    document.getElementById("div").innerHTML = "Division: " + (a / b);
+    document.getElementById("sqrt").innerHTML = "Square root of first: " + Math.sqrt(a);
+}
+</script>
+</head>
+<body>
+<h2>Calculator</h2>
+Enter number 1: <input type="number" id="num1"><br><br>
+Enter number 2: <input type="number" id="num2"><br><br>
+<button onclick="calculate()">Calculate</button>
+<p id="add"></p>
+<p id="sub"></p>
+<p id="mul"></p>
+<p id="div"></p>
+<p id="sqrt"></p>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Window Object Functions</title>
+
+<script>
+function showFunctions() {
+
+    alert("This is an Alert Box");
+
+    let confirmResult = confirm("Do you like JavaScript?");
+    document.getElementById("confirm").innerHTML =
+        "Confirm Result: " + confirmResult;
+
+    let name = prompt("Enter your name:");
+    document.getElementById("prompt").innerHTML =
+        "Hello " + name;
+
+    setTimeout(function() {
+        document.getElementById("timeout").innerHTML =
+            "This message appears after 3 seconds";
+    }, 3000);
+
+    // Hide the button after clicking
+    document.getElementById("btn").style.display = "none";
+}
+</script>
+
+</head>
+
+<body>
+
+<h2>Window Object Predefined Functions</h2>
+
+<button id="btn" onclick="showFunctions()">Click Here</button>
+
+<p id="confirm"></p>
+<p id="prompt"></p>
+<p id="timeout"></p>
+
+</body>
+</html>

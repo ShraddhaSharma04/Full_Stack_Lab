@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Change Background Color</title>
+
+    <script>
+        // Method to generate random background color
+        function random_color() {
+
+            // Generate random values between 0 and 255
+            var r = Math.floor(Math.random() * 256);
+            var g = Math.floor(Math.random() * 256);
+            var b = Math.floor(Math.random() * 256);
+
+            // Set background color using RGB
+            document.body.style.backgroundColor = 
+                "rgb(" + r + "," + g + "," + b + ")";
+        }
+    </script>
+</head>
+
+<!-- Call function when body is clicked -->
+<body onclick="random_color()">
+
+    <h2 align="center">
+        Click anywhere on the page to change background color
+    </h2>
+
+</body>
+</html>
