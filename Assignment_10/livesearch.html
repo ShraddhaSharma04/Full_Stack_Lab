@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Product Search</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h2>Product Search</h2>
+<input type="text" id="search" placeholder="Search product...">
+<p id="count"></p>
+<ul id="results"></ul>
+<script>
+let products = [];
+$.getJSON("products.json", function(data) {
+  products = data;
+});
+function highlight(text, keyword) {
+  let regex = new RegExp(`(${keyword})`, "gi");
+  return text.replace(regex, "<span class='highlight'>$1</span>");
+}
+$("#search").on("keyup", function() {
+  let val = $(this).val().toLowerCase();
+  let list = $("#results");
+  list.empty();
+  if (val === "") {
+    $("#count").text("");
+    return;
+  }
+  let filtered = products.filter(p =>
+    p.name.toLowerCase().includes(val)
+  );
+  if (filtered.length === 0) {
+    list.append("<li>No products found</li>");
+    $("#count").text("0 results");
+    return;
+  }
+  filtered.forEach(p => {
+    let name = highlight(p.name, val);
+    list.append(`<li>${name}</li>`);
+  });
+  $("#count").text(filtered.length + " results found");
+});
+</script>
+</body>
+</html>

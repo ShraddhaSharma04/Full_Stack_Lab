@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Table</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { cursor: pointer; background: #f4f4f4; }
+    .top1 { background-color: gold; }
+    .top2 { background-color: silver; }
+    .top3 { background-color: #cd7f32; }
+  </style>
+</head>
+<body>
+
+<h2>Employee Table</h2>
+<input type="text" id="filter" placeholder="Search by name...">
+
+<table id="empTable">
+  <thead>
+    <tr>
+      <th data-col="name">Name</th>
+      <th data-col="department">Department</th>
+      <th data-col="salary">Salary</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+let employees = [];
+let sortState = JSON.parse(localStorage.getItem("sortState")) || [
+  { col: "department", order: "asc" },
+  { col: "salary", order: "desc" }
+];
+
+function multiSort(data) {
+  return data.sort((a, b) => {
+    for (let rule of sortState) {
+      let valA = a[rule.col];
+      let valB = b[rule.col];
+
+      if (rule.col === "salary") {
+        valA = Number(valA);
+        valB = Number(valB);
+      }
+
+      if (valA < valB) return rule.order === "asc" ? -1 : 1;
+      if (valA > valB) return rule.order === "asc" ? 1 : -1;
+    }
+    return 0;
+  });
+}
+
+function renderTable(data) {
+  const tbody = $("#empTable tbody");
+  tbody.empty();
+
+  let sorted = multiSort([...data]);
+
+  // Top 3 salaries
+  let top3 = [...sorted]
+    .sort((a, b) => b.salary - a.salary)
+    .slice(0, 3)
+    .map(e => e.salary);
+
+  sorted.forEach(emp => {
+    let row = "<tr>";
+
+    let cls = "";
+    if (emp.salary === top3[0]) cls = "top1";
+    else if (emp.salary === top3[1]) cls = "top2";
+    else if (emp.salary === top3[2]) cls = "top3";
+
+    row = `<tr class="${cls}">
+      <td>${emp.name}</td>
+      <td>${emp.department}</td>
+      <td>${emp.salary}</td>
+    </tr>`;
+
+    tbody.append(row);
+  });
+}
+
+function applyFilter() {
+  let keyword = $("#filter").val().toLowerCase();
+  let filtered = employees.filter(e =>
+    e.name.toLowerCase().includes(keyword)
+  );
+  renderTable(filtered);
+}
+
+$(document).ready(function () {
+  // Load JSON
+  $.ajax({
+    url: "employees.json",
+    method: "GET",
+    success: function (data) {
+      employees = data;
+      renderTable(employees);
+    }
+  });
+
+  // Column click sorting
+  $("th").click(function () {
+    let col = $(this).data("col");
+
+    let existing = sortState.find(s => s.col === col);
+
+    if (existing) {
+      existing.order = existing.order === "asc" ? "desc" : "asc";
+    } else {
+      sortState.unshift({ col: col, order: "asc" });
+    }
+
+    localStorage.setItem("sortState", JSON.stringify(sortState));
+    renderTable(employees);
+  });
+
+  // Filter
+  $("#filter").on("keyup", function () {
+    applyFilter();
+  });
+});
+</script>
+</body>
+</html>
