@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<college>
+    <student id="S101">
+        <name>Aman Sharma</name>
+        <course>BCA</course>
+        <year>2</year>
+        <email>aman@gmail.com</email>
+    </student>
+    <student id="S102">
+        <name>Shraddha Sharma</name>
+        <course>B.Tech</course>
+        <year>3</year>
+        <email>shraddha@gmail.com</email>
+    </student>
+    <student id="S103">
+        <name>Rahul Singh</name>
+        <course>BBA</course>
+        <year>1</year>
+        <email>rahul@gmail.com</email>
+    </student>
+    <student id="S104">
+        <name>Bhumika Bahuguna</name>
+        <course>MCA</course>
+        <year>2</year>
+        <email>neha@gmail.com</email>
+    </student>
+    <student id="S105">
+        <name>Karan Mehta</name>
+        <course>B.Sc IT</course>
+        <year>3</year>
+        <email>karan@gmail.com</email>
+    </student>
+</college>
