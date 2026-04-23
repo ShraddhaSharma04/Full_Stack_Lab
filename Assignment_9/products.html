@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pagination</title>
+</head>
+<body>
+
+<h2>Products</h2>
+
+<ul id="list"></ul>
+
+<button onclick="prevPage()">Previous</button>
+<button onclick="nextPage()">Next</button>
+
+<script>
+
+let products = [];
+let currentPage = 1;
+let perPage = 5;
+
+fetch("products.json")
+.then(res => res.json())
+.then(data => {
+    products = data.products;
+    display();
+});
+
+function display()
+{
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+
+    let start = (currentPage-1)*perPage;
+    let end = start + perPage;
+
+    let pageData = products.slice(start,end);
+
+    pageData.forEach(p=>{
+        let li = document.createElement("li");
+        li.innerHTML = p.name + " - ₹" + p.price;
+        list.appendChild(li);
+    });
+}
+
+function nextPage()
+{
+    if(currentPage * perPage < products.length)
+    {
+        currentPage++;
+        display();
+    }
+}
+
+function prevPage()
+{
+    if(currentPage > 1)
+    {
+        currentPage--;
+        display();
+    }
+}
+
+</script>
+
+</body>
+</html>

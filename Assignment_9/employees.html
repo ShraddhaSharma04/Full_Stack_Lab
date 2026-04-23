@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Employee Table</title>
+<style>
+.highlight { background-color: rgb(203, 168, 245); }
+</style>
+</head>
+<body>
+<h2>Employee Table</h2>
+<button onclick="sortByName()">Sort by Name</button>
+<button onclick="sortBySalary()">Sort by Salary</button>
+<table border="1" id="table">
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Department</th>
+<th>Salary</th>
+</tr>
+</table>
+<script>
+let employees = [];
+var xhr = new XMLHttpRequest();
+xhr.open("GET","employees.json",true);
+xhr.onreadystatechange = function()
+{
+    if(xhr.readyState==4 && xhr.status==200)
+    {
+        employees = JSON.parse(xhr.responseText).employees;
+        display(employees);
+    }
+};
+xhr.send();
+function display(data)
+{
+    let table = document.getElementById("table");
+    table.innerHTML = `
+    <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Department</th>
+    <th>Salary</th>
+    </tr>`;
+    let maxSalary = Math.max(...data.map(e => e.salary));
+    data.forEach(e => {
+        let row = table.insertRow();
+        if(e.salary == maxSalary) row.classList.add("highlight");
+        row.insertCell(0).innerHTML = e.id;
+        row.insertCell(1).innerHTML = e.name;
+        row.insertCell(2).innerHTML = e.department;
+        row.insertCell(3).innerHTML = e.salary;
+    });
+}
+function sortByName()
+{
+    employees.sort((a,b)=> a.name.localeCompare(b.name));
+    display(employees);
+}
+function sortBySalary()
+{
+    employees.sort((a,b)=> b.salary - a.salary);
+    display(employees);
+}
+</script>
+</body>
+</html>

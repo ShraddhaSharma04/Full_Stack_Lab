@@ -1,0 +1,12 @@
+{
+ "products":[
+  {"name":"Laptop","price":60000},
+  {"name":"Mobile","price":20000},
+  {"name":"Headphones","price":3000},
+  {"name":"Tablet","price":25000},
+  {"name":"Monitor","price":15000},
+  {"name":"Keyboard","price":2000},
+  {"name":"Mouse","price":1000},
+  {"name":"Speaker","price":5000}
+ ]
+}

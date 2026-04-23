@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Live Search</title>
+</head>
+<body>
+
+<h2>Student Search</h2>
+
+<input type="text" id="search" onkeyup="filterData()" placeholder="Search name">
+
+<table border="1" id="table">
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Course</th>
+</tr>
+</table>
+
+<script>
+
+let students = [];
+
+var xhr = new XMLHttpRequest();
+xhr.open("GET","student.json",true);
+
+xhr.onreadystatechange = function()
+{
+    if(xhr.readyState==4 && xhr.status==200)
+    {
+        students = JSON.parse(xhr.responseText).students;
+        display(students);
+    }
+};
+xhr.send();
+
+function display(data)
+{
+    let table = document.getElementById("table");
+    table.innerHTML = `
+    <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Course</th>
+    </tr>`;
+
+    data.forEach(s=>{
+        let row = table.insertRow();
+        row.insertCell(0).innerHTML = s.id;
+        row.insertCell(1).innerHTML = s.name;
+        row.insertCell(2).innerHTML = s.course;
+    });
+}
+
+function filterData()
+{
+    let input = document.getElementById("search").value.toLowerCase();
+
+    let filtered = students.filter(s =>
+        s.name.toLowerCase().includes(input)
+    );
+
+    display(filtered);
+}
+
+</script>
+
+</body>
+</html>

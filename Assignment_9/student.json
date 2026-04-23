@@ -1,0 +1,8 @@
+{
+ "students":[
+  {"id":1,"name":"Koyel","course":"CSE"},
+  {"id":2,"name":"Anushka","course":"IT"},
+  {"id":3,"name":"Priyanshi","course":"AI"},
+  {"id":4,"name":"Rahul","course":"ECE"}
+ ]
+}
