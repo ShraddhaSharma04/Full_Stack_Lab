@@ -2,129 +2,226 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Employee Table</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <title>Dynamic Employee Table</title>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
   <style>
-    body { font-family: Arial; margin: 20px; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-    th { cursor: pointer; background: #f4f4f4; }
-    .top1 { background-color: gold; }
-    .top2 { background-color: silver; }
-    .top3 { background-color: #cd7f32; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .container {
+      width: 80%;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background-color: #2c3e50;
+      color: white;
+      padding: 12px;
+      cursor: pointer;
+    }
+
+    td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .rank1 {
+      background-color: gold !important;
+      font-weight: bold;
+    }
+
+    .rank2 {
+      background-color: silver !important;
+      font-weight: bold;
+    }
+
+    .rank3 {
+      background-color: #cd7f32 !important;
+      color: white;
+      font-weight: bold;
+    }
+
+    .sort-info {
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #444;
+    }
   </style>
 </head>
+
 <body>
 
-<h2>Employee Table</h2>
-<input type="text" id="filter" placeholder="Search by name...">
+  <div class="container">
+    <h2>Employee Table</h2>
 
-<table id="empTable">
-  <thead>
-    <tr>
-      <th data-col="name">Name</th>
-      <th data-col="department">Department</th>
-      <th data-col="salary">Salary</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+    <input type="text" id="searchBox" placeholder="Search by name or department">
 
-<script>
-let employees = [];
-let sortState = JSON.parse(localStorage.getItem("sortState")) || [
-  { col: "department", order: "asc" },
-  { col: "salary", order: "desc" }
-];
+    <div class="sort-info" id="sortInfo"></div>
 
-function multiSort(data) {
-  return data.sort((a, b) => {
-    for (let rule of sortState) {
-      let valA = a[rule.col];
-      let valB = b[rule.col];
+    <table>
+      <thead>
+        <tr>
+          <th data-column="id">ID</th>
+          <th data-column="name">Name</th>
+          <th data-column="department">Department</th>
+          <th data-column="salary">Salary</th>
+        </tr>
+      </thead>
 
-      if (rule.col === "salary") {
-        valA = Number(valA);
-        valB = Number(valB);
-      }
+      <tbody id="employeeTable">
+      </tbody>
+    </table>
+  </div>
 
-      if (valA < valB) return rule.order === "asc" ? -1 : 1;
-      if (valA > valB) return rule.order === "asc" ? 1 : -1;
+  <script>
+    let employees = [];
+
+    let sortState = JSON.parse(localStorage.getItem("sortState")) || {
+      primary: "department",
+      primaryOrder: "asc",
+      secondary: "salary",
+      secondaryOrder: "desc"
+    };
+
+    $(document).ready(function () {
+      $.ajax({
+        url: "employees.json",
+        method: "GET",
+        dataType: "json",
+        success: function (data) {
+          employees = data;
+          displayTable();
+        },
+        error: function () {
+          alert("Error loading employees.json file");
+        }
+      });
+
+      $("#searchBox").on("keyup", function () {
+        displayTable();
+      });
+
+      $("th").on("click", function () {
+        let column = $(this).data("column");
+
+        if (sortState.primary === column) {
+          sortState.primaryOrder = sortState.primaryOrder === "asc" ? "desc" : "asc";
+        } else {
+          sortState.primary = column;
+          sortState.primaryOrder = column === "salary" ? "desc" : "asc";
+        }
+
+        localStorage.setItem("sortState", JSON.stringify(sortState));
+
+        displayTable();
+      });
+    });
+
+    function displayTable() {
+      let searchValue = $("#searchBox").val().toLowerCase();
+
+      let filteredEmployees = employees.filter(function (emp) {
+        return emp.name.toLowerCase().includes(searchValue) ||
+               emp.department.toLowerCase().includes(searchValue);
+      });
+
+      let sortedEmployees = sortEmployees(filteredEmployees);
+
+      highlightTopSalaries(sortedEmployees);
+
+      let rows = "";
+
+      sortedEmployees.forEach(function (emp) {
+        rows += `
+          <tr class="${emp.highlightClass || ''}">
+            <td>${emp.id}</td>
+            <td>${emp.name}</td>
+            <td>${emp.department}</td>
+            <td>${emp.salary}</td>
+          </tr>
+        `;
+      });
+
+      $("#employeeTable").html(rows);
+
+      $("#sortInfo").text(
+        "Current Sort: " + sortState.primary + " (" + sortState.primaryOrder + 
+        "), then salary (descending)"
+      );
     }
-    return 0;
-  });
-}
 
-function renderTable(data) {
-  const tbody = $("#empTable tbody");
-  tbody.empty();
+    function sortEmployees(data) {
+      return data.sort(function (a, b) {
+        let primaryColumn = sortState.primary;
+        let primaryOrder = sortState.primaryOrder;
 
-  let sorted = multiSort([...data]);
+        let valueA = a[primaryColumn];
+        let valueB = b[primaryColumn];
 
-  // Top 3 salaries
-  let top3 = [...sorted]
-    .sort((a, b) => b.salary - a.salary)
-    .slice(0, 3)
-    .map(e => e.salary);
+        if (typeof valueA === "string") {
+          valueA = valueA.toLowerCase();
+          valueB = valueB.toLowerCase();
+        }
 
-  sorted.forEach(emp => {
-    let row = "<tr>";
+        if (valueA < valueB) {
+          return primaryOrder === "asc" ? -1 : 1;
+        }
 
-    let cls = "";
-    if (emp.salary === top3[0]) cls = "top1";
-    else if (emp.salary === top3[1]) cls = "top2";
-    else if (emp.salary === top3[2]) cls = "top3";
+        if (valueA > valueB) {
+          return primaryOrder === "asc" ? 1 : -1;
+        }
 
-    row = `<tr class="${cls}">
-      <td>${emp.name}</td>
-      <td>${emp.department}</td>
-      <td>${emp.salary}</td>
-    </tr>`;
-
-    tbody.append(row);
-  });
-}
-
-function applyFilter() {
-  let keyword = $("#filter").val().toLowerCase();
-  let filtered = employees.filter(e =>
-    e.name.toLowerCase().includes(keyword)
-  );
-  renderTable(filtered);
-}
-
-$(document).ready(function () {
-  // Load JSON
-  $.ajax({
-    url: "employees.json",
-    method: "GET",
-    success: function (data) {
-      employees = data;
-      renderTable(employees);
-    }
-  });
-
-  // Column click sorting
-  $("th").click(function () {
-    let col = $(this).data("col");
-
-    let existing = sortState.find(s => s.col === col);
-
-    if (existing) {
-      existing.order = existing.order === "asc" ? "desc" : "asc";
-    } else {
-      sortState.unshift({ col: col, order: "asc" });
+        return b.salary - a.salary;
+      });
     }
 
-    localStorage.setItem("sortState", JSON.stringify(sortState));
-    renderTable(employees);
-  });
+    function highlightTopSalaries(data) {
+      data.forEach(function (emp) {
+        emp.highlightClass = "";
+      });
 
-  // Filter
-  $("#filter").on("keyup", function () {
-    applyFilter();
-  });
-});
-</script>
+      let salarySorted = [...data].sort(function (a, b) {
+        return b.salary - a.salary;
+      });
+
+      if (salarySorted[0]) salarySorted[0].highlightClass = "rank1";
+      if (salarySorted[1]) salarySorted[1].highlightClass = "rank2";
+      if (salarySorted[2]) salarySorted[2].highlightClass = "rank3";
+    }
+  </script>
+
 </body>
 </html>
