@@ -1,7 +1,44 @@
 [
-  {"name":"Alice","department":"HR","salary":50000},
-  {"name":"Bob","department":"IT","salary":80000},
-  {"name":"Charlie","department":"IT","salary":75000},
-  {"name":"David","department":"Finance","salary":90000},
-  {"name":"Eve","department":"HR","salary":60000}
+  {
+    "id": 1,
+    "name": "Amit Sharma",
+    "department": "IT",
+    "salary": 75000
+  },
+  {
+    "id": 2,
+    "name": "Priya Singh",
+    "department": "HR",
+    "salary": 60000
+  },
+  {
+    "id": 3,
+    "name": "Rahul Verma",
+    "department": "IT",
+    "salary": 90000
+  },
+  {
+    "id": 4,
+    "name": "Sneha Gupta",
+    "department": "Finance",
+    "salary": 85000
+  },
+  {
+    "id": 5,
+    "name": "Karan Mehta",
+    "department": "Finance",
+    "salary": 70000
+  },
+  {
+    "id": 6,
+    "name": "Neha Joshi",
+    "department": "HR",
+    "salary": 95000
+  },
+  {
+    "id": 7,
+    "name": "Rohan Das",
+    "department": "IT",
+    "salary": 82000
+  }
 ]
