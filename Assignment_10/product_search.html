@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Product Search</title>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 30px;
+    }
+
+    .box {
+      width: 70%;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+    }
+
+    #totalMatches {
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #34495e;
+    }
+
+    .item {
+      background: #fafafa;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    .item h3 {
+      margin: 0;
+      color: #222;
+    }
+
+    .item p {
+      margin: 6px 0;
+      color: #555;
+    }
+
+    .highlight {
+      background-color: yellow;
+      font-weight: bold;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    .no-data {
+      text-align: center;
+      color: red;
+      background: #ffecec;
+      padding: 15px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+    <h2>Live Product Search</h2>
+
+    <input type="text" id="searchInput" placeholder="Search by product name, category, or price">
+
+    <div id="totalMatches">Total Matches: 0</div>
+
+    <div id="resultBox"></div>
+  </div>
+
+  <script>
+    let productList = [];
+
+    $(document).ready(function () {
+
+      $.ajax({
+        url: "product_data.json",
+        method: "GET",
+        dataType: "json",
+        success: function (data) {
+          productList = data;
+          showProducts(productList, "");
+        },
+        error: function () {
+          $("#resultBox").html(
+            "<div class='no-data'>Product data could not be loaded.</div>"
+          );
+        }
+      });
+
+      $("#searchInput").on("keyup", function () {
+        let keyword = $(this).val().trim().toLowerCase();
+
+        let filteredProducts = productList.filter(function (product) {
+          return product.name.toLowerCase().includes(keyword) ||
+                 product.category.toLowerCase().includes(keyword) ||
+                 product.price.toString().includes(keyword);
+        });
+
+        showProducts(filteredProducts, keyword);
+      });
+
+    });
+
+    function showProducts(products, keyword) {
+      $("#totalMatches").text("Total Matches: " + products.length);
+
+      if (products.length === 0) {
+        $("#resultBox").html(
+          "<div class='no-data'>No products found. Please try another search.</div>"
+        );
+        return;
+      }
+
+      let output = "";
+
+      products.forEach(function (product) {
+        let name = highlightMatch(product.name, keyword);
+        let category = highlightMatch(product.category, keyword);
+        let price = highlightMatch(product.price.toString(), keyword);
+
+        output += `
+          <div class="item">
+            <h3>${name}</h3>
+            <p><strong>Category:</strong> ${category}</p>
+            <p><strong>Price:</strong> ₹${price}</p>
+          </div>
+        `;
+      });
+
+      $("#resultBox").html(output);
+    }
+
+    function highlightMatch(text, keyword) {
+      if (keyword === "") {
+        return text;
+      }
+
+      let pattern = new RegExp("(" + keyword + ")", "gi");
+
+      return text.replace(pattern, "<span class='highlight'>$1</span>");
+    }
+  </script>
+
+</body>
+</html>
