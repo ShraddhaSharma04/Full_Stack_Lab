@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dynamic Form Builder</title>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 30px;
+    }
+
+    .container {
+      width: 80%;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .builder-box,
+    .final-form-box {
+      margin-top: 25px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      font-size: 15px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 16px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1a252f;
+    }
+
+    .field-card {
+      background: white;
+      padding: 15px;
+      margin-top: 15px;
+      border-left: 5px solid #2c3e50;
+      border-radius: 6px;
+    }
+
+    .error-box {
+      display: none;
+      background: #ffecec;
+      color: #b30000;
+      border: 1px solid #ff9999;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+
+    .error-box ul {
+      margin: 8px 0 0 20px;
+    }
+
+    .success-box {
+      display: none;
+      background: #e8ffe8;
+      color: #006400;
+      border: 1px solid #7bd87b;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .small-text {
+      color: #666;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Dynamic Form Builder</h2>
+
+    <div class="builder-box">
+      <h3>Add Form Field</h3>
+
+      <label>Field Label</label>
+      <input type="text" id="fieldLabel" placeholder="Example: Username">
+
+      <label>Field Type</label>
+      <select id="fieldType">
+        <option value="text">Text</option>
+        <option value="email">Email</option>
+        <option value="password">Password</option>
+      </select>
+
+      <label>Required</label>
+      <select id="isRequired">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+
+      <label>Minimum Length</label>
+      <input type="number" id="minLength" placeholder="Example: 5">
+
+      <button id="addFieldBtn">Add Field</button>
+      <button id="generateFormBtn">Generate Final Form</button>
+
+      <div id="fieldPreview"></div>
+    </div>
+
+    <div class="final-form-box">
+      <h3>Generated Form</h3>
+
+      <div id="errorSummary" class="error-box"></div>
+      <div id="successMessage" class="success-box">Form submitted successfully!</div>
+
+      <form id="generatedForm"></form>
+    </div>
+  </div>
+
+  <script>
+    let fields = [];
+
+    $(document).ready(function () {
+
+      $("#addFieldBtn").click(function () {
+        let label = $("#fieldLabel").val().trim();
+        let type = $("#fieldType").val();
+        let required = $("#isRequired").val();
+        let minLength = $("#minLength").val();
+
+        if (label === "") {
+          alert("Please enter field label");
+          return;
+        }
+
+        let field = {
+          label: label,
+          type: type,
+          required: required,
+          minLength: minLength
+        };
+
+        fields.push(field);
+
+        showFieldPreview();
+
+        $("#fieldLabel").val("");
+        $("#fieldType").val("text");
+        $("#isRequired").val("yes");
+        $("#minLength").val("");
+      });
+
+      $("#generateFormBtn").click(function () {
+        generateFinalForm();
+      });
+
+      $("#generatedForm").on("submit", function (e) {
+        e.preventDefault();
+        validateForm();
+      });
+
+    });
+
+    function showFieldPreview() {
+      let output = "<h3>Added Fields</h3>";
+
+      fields.forEach(function (field, index) {
+        output += `
+          <div class="field-card">
+            <strong>${index + 1}. ${field.label}</strong>
+            <p>Type: ${field.type}</p>
+            <p>Required: ${field.required}</p>
+            <p>Minimum Length: ${field.minLength || "Not set"}</p>
+          </div>
+        `;
+      });
+
+      $("#fieldPreview").html(output);
+    }
+
+    function generateFinalForm() {
+      if (fields.length === 0) {
+        alert("Please add at least one field first");
+        return;
+      }
+
+      $("#errorSummary").hide();
+      $("#successMessage").hide();
+
+      let formHTML = "";
+
+      fields.forEach(function (field, index) {
+        formHTML += `
+          <label>${field.label}</label>
+          <input 
+            type="${field.type}" 
+            id="field_${index}" 
+            data-label="${field.label}"
+            data-required="${field.required}"
+            data-minlength="${field.minLength}"
+          >
+          <p class="small-text">
+            Required: ${field.required}, 
+            Minimum Length: ${field.minLength || "Not set"}
+          </p>
+        `;
+      });
+
+      formHTML += `<button type="submit">Submit Form</button>`;
+
+      $("#generatedForm").html(formHTML);
+    }
+
+    function validateForm() {
+      let errors = [];
+
+      $("#successMessage").hide();
+      $("#errorSummary").hide();
+
+      $("#generatedForm input").each(function () {
+        let value = $(this).val().trim();
+        let label = $(this).data("label");
+        let required = $(this).data("required");
+        let minLength = $(this).data("minlength");
+        let type = $(this).attr("type");
+
+        if (required === "yes" && value === "") {
+          errors.push(label + " is required.");
+        }
+
+        if (minLength !== "" && value.length > 0 && value.length < parseInt(minLength)) {
+          errors.push(label + " must be at least " + minLength + " characters long.");
+        }
+
+        if (type === "email" && value.length > 0) {
+          let emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+          if (!emailPattern.test(value)) {
+            errors.push(label + " must be a valid email address.");
+          }
+        }
+      });
+
+      if (errors.length > 0) {
+        let errorHTML = "<strong>Please fix the following errors:</strong><ul>";
+
+        errors.forEach(function (error) {
+          errorHTML += "<li>" + error + "</li>";
+        });
+
+        errorHTML += "</ul>";
+
+        $("#errorSummary").html(errorHTML).show();
+      } else {
+        $("#successMessage").show();
+        $("#generatedForm")[0].reset();
+      }
+    }
+  </script>
+
+</body>
+</html>
