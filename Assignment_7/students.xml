@@ -1,33 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<college>
-    <student id="S101">
-        <name>Aman Sharma</name>
-        <course>BCA</course>
-        <year>2</year>
-        <email>aman@gmail.com</email>
-    </student>
-    <student id="S102">
+
+<college xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="students.xsd">
+
+    <student id="101">
         <name>Shraddha Sharma</name>
         <course>B.Tech</course>
+        <year>2</year>
+        <email>shraddha101@gmail.com</email>
+    </student>
+
+    <student id="102">
+        <name>Amit Verma</name>
+        <course>BCA</course>
         <year>3</year>
-        <email>shraddha@gmail.com</email>
+        <email>amit102@gmail.com</email>
     </student>
-    <student id="S103">
-        <name>Rahul Singh</name>
-        <course>BBA</course>
+
+    <student id="103">
+        <name>Priya Singh</name>
+        <course>B.Sc</course>
         <year>1</year>
-        <email>rahul@gmail.com</email>
+        <email>priya103@gmail.com</email>
     </student>
-    <student id="S104">
-        <name>Bhumika Bahuguna</name>
+
+    <student id="104">
+        <name>Rahul Gupta</name>
         <course>MCA</course>
         <year>2</year>
-        <email>neha@gmail.com</email>
+        <email>rahul104@gmail.com</email>
     </student>
-    <student id="S105">
-        <name>Karan Mehta</name>
-        <course>B.Sc IT</course>
-        <year>3</year>
-        <email>karan@gmail.com</email>
+
+    <student id="105">
+        <name>Neha Joshi</name>
+        <course>B.Tech</course>
+        <year>4</year>
+        <email>neha105@gmail.com</email>
     </student>
+
 </college>
