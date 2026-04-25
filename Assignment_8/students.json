@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "name": "Shraddha Sharma",
+        "course": "B.Tech CSE",
+        "year": 2
+    },
+    {
+        "id": 2,
+        "name": "Amit Verma",
+        "course": "BCA",
+        "year": 1
+    },
+    {
+        "id": 3,
+        "name": "Priya Singh",
+        "course": "MCA",
+        "year": 2
+    },
+    {
+        "id": 4,
+        "name": "Rahul Gupta",
+        "course": "B.Sc",
+        "year": 3
+    }
+]

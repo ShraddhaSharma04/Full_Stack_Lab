@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fetch API Product Example</title>
+
+    <style>
+        .product {
+            border: 1px solid black;
+            padding: 12px;
+            margin: 10px;
+            width: 300px;
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Product List using Fetch API</h2>
+
+    <button onclick="loadProducts()">Load Products</button>
+
+    <div id="productList"></div>
+
+    <script>
+        function loadProducts() {
+            fetch("products.json")
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (products) {
+                    var output = "";
+
+                    for (var i = 0; i < products.length; i++) {
+                        output += `
+                            <div class="product">
+                                <h3>${products[i].name}</h3>
+                                <p><strong>ID:</strong> ${products[i].id}</p>
+                                <p><strong>Price:</strong> ₹${products[i].price}</p>
+                            </div>
+                        `;
+                    }
+
+                    document.getElementById("productList").innerHTML = output;
+                })
+                .catch(function () {
+                    document.getElementById("productList").innerHTML =
+                        "Error loading products.json file.";
+                });
+        }
+    </script>
+
+</body>
+</html>

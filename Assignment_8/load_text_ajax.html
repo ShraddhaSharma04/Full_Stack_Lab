@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Load Text File using AJAX</title>
+</head>
+<body>
+
+    <h2>Load Text File using AJAX</h2>
+
+    <button onclick="loadContent()">Load Content</button>
+
+    <div id="contentBox" style="margin-top:20px; padding:15px; border:1px solid black;"></div>
+
+    <script>
+        function loadContent() {
+            var xhr = new XMLHttpRequest();
+
+            xhr.open("GET", "message.txt", true);
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    document.getElementById("contentBox").innerHTML = xhr.responseText;
+                } else {
+                    document.getElementById("contentBox").innerHTML = "Error loading file.";
+                }
+            };
+
+            xhr.send();
+        }
+    </script>
+
+</body>
+</html>
