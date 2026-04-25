@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Parse XML using JavaScript DOM Parser</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f7;
+            padding: 30px;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        button {
+            padding: 10px 18px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background-color: #1a252f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .message {
+            color: red;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Student XML Data</h2>
+
+        <button onclick="loadStudentData()">Load Student Data</button>
+
+        <div id="output"></div>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        function loadStudentData() {
+            var xhr = new XMLHttpRequest();
+
+            xhr.open("GET", "students.xml", true);
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var xmlDoc = xhr.responseXML;
+
+                    var students = xmlDoc.getElementsByTagName("student");
+
+                    var table = `
+                        <table>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Course</th>
+                                <th>Year</th>
+                                <th>Email</th>
+                            </tr>
+                    `;
+
+                    for (var i = 0; i < students.length; i++) {
+                        var id = students[i].getAttribute("id");
+
+                        var name = students[i]
+                            .getElementsByTagName("name")[0]
+                            .textContent;
+
+                        var course = students[i]
+                            .getElementsByTagName("course")[0]
+                            .textContent;
+
+                        var year = students[i]
+                            .getElementsByTagName("year")[0]
+                            .textContent;
+
+                        var email = students[i]
+                            .getElementsByTagName("email")[0]
+                            .textContent;
+
+                        table += `
+                            <tr>
+                                <td>${id}</td>
+                                <td>${name}</td>
+                                <td>${course}</td>
+                                <td>${year}</td>
+                                <td>${email}</td>
+                            </tr>
+                        `;
+                    }
+
+                    table += "</table>";
+
+                    document.getElementById("output").innerHTML = table;
+                    document.getElementById("message").innerHTML = "";
+                } else {
+                    document.getElementById("message").innerHTML =
+                        "Error loading students.xml file.";
+                }
+            };
+
+            xhr.onerror = function () {
+                document.getElementById("message").innerHTML =
+                    "Request failed. Please run this using a local server.";
+            };
+
+            xhr.send();
+        }
+    </script>
+
+</body>
+</html>
