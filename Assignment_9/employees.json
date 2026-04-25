@@ -1,12 +1,12 @@
 {
  "employees":[
-  {"id":1,"name":"Koyel","department":"CSE","salary":50000},
-  {"id":2,"name":"manya","department":"IT","salary":70000},
-  {"id":3,"name":"divya","department":"AI","salary":60000},
-  {"id":4,"name":"ishant","department":"ECE","salary":80000},
-  {"id":1,"name":" mitali","department":"CSE","salary":30000},
+  {"id":1,"name":"bhumika","department":"CSE","salary":50000},
+  {"id":2,"name":"shristi","department":"IT","salary":70000},
+  {"id":3,"name":"diksha","department":"AI","salary":60000},
+  {"id":4,"name":"kanika","department":"ECE","salary":80000},
+  {"id":1,"name":" yashika","department":"CSE","salary":30000},
   {"id":2,"name":"shraddha","department":"IT","salary":40000},
-  {"id":3,"name":"taetae","department":"AI","salary":90000},
+  {"id":3,"name":"tom","department":"AI","salary":90000},
   {"id":4,"name":"jerry","department":"ECE","salary":20000}
  ]
 }
