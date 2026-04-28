@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "question": "Which language is mainly used for web page structure?",
+    "options": ["HTML", "CSS", "JavaScript", "PHP"],
+    "answer": "HTML"
+  },
+  {
+    "id": 2,
+    "question": "Which symbol is used for ID selector in CSS?",
+    "options": [".", "#", "*", "&"],
+    "answer": "#"
+  },
+  {
+    "id": 3,
+    "question": "Which method is used in jQuery to perform AJAX request?",
+    "options": ["$.ajax()", "$.postman()", "$.request()", "$.send()"],
+    "answer": "$.ajax()"
+  },
+  {
+    "id": 4,
+    "question": "JSON stands for:",
+    "options": [
+      "JavaScript Object Notation",
+      "Java Source Object Network",
+      "JavaScript Online Number",
+      "Joint System Object Name"
+    ],
+    "answer": "JavaScript Object Notation"
+  },
+  {
+    "id": 5,
+    "question": "Which function is used to run code after a fixed time interval?",
+    "options": ["setTimeout()", "setInterval()", "clearTimeout()", "stopTimer()"],
+    "answer": "setInterval()"
+  }
+]

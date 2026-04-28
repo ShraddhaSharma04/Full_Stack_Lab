@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Auto Updating Comment Stream</title>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 30px;
+    }
+
+    .container {
+      width: 75%;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 12px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      font-size: 15px;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 80px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 18px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1a252f;
+    }
+
+    .message-box {
+      display: none;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .success {
+      background: #e8ffe8;
+      color: #006400;
+      border: 1px solid #77cc77;
+    }
+
+    .error {
+      background: #ffecec;
+      color: #b30000;
+      border: 1px solid #ff9999;
+    }
+
+    .comment-box {
+      margin-top: 25px;
+    }
+
+    .comment {
+      padding: 15px;
+      background: #fafafa;
+      border-left: 5px solid #2c3e50;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .comment strong {
+      color: #2c3e50;
+    }
+
+    .comment p {
+      margin: 6px 0;
+      color: #444;
+    }
+
+    .comment small {
+      color: #777;
+    }
+
+    .new-comment {
+      background: #fff3cd;
+      border-left-color: #f39c12;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Auto Updating Comment Stream</h2>
+
+    <form id="commentForm">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="Enter your name">
+
+      <label>Message</label>
+      <textarea id="message" placeholder="Write your comment"></textarea>
+
+      <button type="submit">Post Comment</button>
+    </form>
+
+    <div id="statusMessage" class="message-box"></div>
+
+    <div class="comment-box">
+      <h3>Comments</h3>
+      <div id="commentsList"></div>
+      <div id="emptyMessage" class="empty"></div>
+    </div>
+  </div>
+
+  <script>
+    let lastCommentId = 0;
+
+    $(document).ready(function () {
+      loadComments(false);
+
+      setInterval(function () {
+        loadComments(true);
+      }, 3000);
+
+      $("#commentForm").submit(function (e) {
+        e.preventDefault();
+
+        let username = $("#username").val().trim();
+        let message = $("#message").val().trim();
+
+        if (username === "" || message === "") {
+          showMessage("Username and message are required.", "error");
+          return;
+        }
+
+        $.ajax({
+          url: "add_comment.php",
+          method: "POST",
+          dataType: "json",
+          data: {
+            username: username,
+            message: message
+          },
+          success: function (response) {
+            if (response.status === "success") {
+              showMessage(response.message, "success");
+              $("#commentForm")[0].reset();
+              loadComments(true);
+            } else {
+              showMessage(response.message, "error");
+            }
+          },
+          error: function () {
+            showMessage("AJAX error while submitting comment.", "error");
+          }
+        });
+      });
+    });
+
+    function loadComments(highlightNew) {
+      $.ajax({
+        url: "get_comments.php",
+        method: "GET",
+        dataType: "json",
+        success: function (response) {
+          if (response.status === "success") {
+            displayNewComments(response.comments, highlightNew);
+          } else {
+            showMessage(response.message, "error");
+          }
+        },
+        error: function () {
+          showMessage("AJAX error while fetching comments.", "error");
+        }
+      });
+    }
+
+    function displayNewComments(comments, highlightNew) {
+      if (comments.length === 0 && lastCommentId === 0) {
+        $("#emptyMessage").text("No comments yet.");
+        return;
+      }
+
+      $("#emptyMessage").text("");
+
+      comments.forEach(function (comment) {
+        if (comment.id > lastCommentId) {
+          let className = highlightNew ? "comment new-comment" : "comment";
+
+          let commentHTML = `
+            <div class="${className}" id="comment-${comment.id}">
+              <strong>${comment.username}</strong>
+              <p>${comment.message}</p>
+              <small>${comment.time}</small>
+            </div>
+          `;
+
+          $("#commentsList").append(commentHTML);
+
+          if (highlightNew) {
+            setTimeout(function () {
+              $("#comment-" + comment.id).removeClass("new-comment");
+            }, 2000);
+          }
+
+          lastCommentId = comment.id;
+        }
+      });
+    }
+
+    function showMessage(message, type) {
+      $("#statusMessage")
+        .removeClass("success error")
+        .addClass(type)
+        .text(message)
+        .fadeIn();
+
+      setTimeout(function () {
+        $("#statusMessage").fadeOut();
+      }, 3000);
+    }
+  </script>
+
+</body>
+</html>

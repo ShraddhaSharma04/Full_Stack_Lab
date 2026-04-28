@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Server Down",
+    "message": "Main server is not responding.",
+    "priority": "high"
+  },
+  {
+    "id": 2,
+    "title": "Assignment Reminder",
+    "message": "Submit your jQuery assignment before midnight.",
+    "priority": "medium"
+  },
+  {
+    "id": 3,
+    "title": "System Update",
+    "message": "A minor system update is available.",
+    "priority": "low"
+  },
+  {
+    "id": 4,
+    "title": "Security Alert",
+    "message": "Multiple failed login attempts detected.",
+    "priority": "high"
+  },
+  {
+    "id": 5,
+    "title": "New Message",
+    "message": "You have a new message from admin.",
+    "priority": "medium"
+  },
+  {
+    "id": 6,
+    "title": "Daily Tip",
+    "message": "Use strong passwords for better security.",
+    "priority": "low"
+  }
+]

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Based Notification System</title>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 30px;
+    }
+
+    .container {
+      width: 80%;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .count-box {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .priority-section {
+      margin-top: 25px;
+    }
+
+    .priority-section h3 {
+      padding: 10px;
+      color: white;
+      border-radius: 5px;
+    }
+
+    .high-heading {
+      background: #c0392b;
+    }
+
+    .medium-heading {
+      background: #f39c12;
+    }
+
+    .low-heading {
+      background: #27ae60;
+    }
+
+    .notification {
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 6px;
+      position: relative;
+      background: #fafafa;
+      border-left: 6px solid #999;
+    }
+
+    .high {
+      border-left-color: #c0392b;
+    }
+
+    .medium {
+      border-left-color: #f39c12;
+    }
+
+    .low {
+      border-left-color: #27ae60;
+    }
+
+    .notification h4 {
+      margin: 0 0 6px;
+      color: #222;
+    }
+
+    .notification p {
+      margin: 0;
+      color: #555;
+    }
+
+    .dismiss-btn {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .dismiss-btn:hover {
+      background: #1a252f;
+    }
+
+    .empty-msg {
+      color: #777;
+      font-style: italic;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Event Based Notification System</h2>
+
+    <div class="count-box">
+      Active Notifications: <span id="activeCount">0</span>
+    </div>
+
+    <div class="priority-section">
+      <h3 class="high-heading">High Priority</h3>
+      <div id="highBox"></div>
+    </div>
+
+    <div class="priority-section">
+      <h3 class="medium-heading">Medium Priority</h3>
+      <div id="mediumBox"></div>
+    </div>
+
+    <div class="priority-section">
+      <h3 class="low-heading">Low Priority</h3>
+      <div id="lowBox"></div>
+    </div>
+  </div>
+
+  <script>
+    let notifications = [];
+
+    let dismissedIds = JSON.parse(localStorage.getItem("dismissedNotifications")) || [];
+
+    $(document).ready(function () {
+      $.ajax({
+        url: "notifications_data.json",
+        method: "GET",
+        dataType: "json",
+        success: function (data) {
+          notifications = data;
+          displayNotifications();
+          autoHideLowPriority();
+        },
+        error: function () {
+          alert("Unable to load notifications_data.json file.");
+        }
+      });
+
+      $(document).on("click", ".dismiss-btn", function () {
+        let id = parseInt($(this).data("id"));
+
+        if (!dismissedIds.includes(id)) {
+          dismissedIds.push(id);
+        }
+
+        localStorage.setItem("dismissedNotifications", JSON.stringify(dismissedIds));
+
+        $("#notification-" + id).fadeOut(400, function () {
+          displayNotifications();
+        });
+      });
+    });
+
+    function displayNotifications() {
+      $("#highBox").html("");
+      $("#mediumBox").html("");
+      $("#lowBox").html("");
+
+      let activeNotifications = notifications.filter(function (notification) {
+        return !dismissedIds.includes(notification.id);
+      });
+
+      let highCount = 0;
+      let mediumCount = 0;
+      let lowCount = 0;
+
+      activeNotifications.forEach(function (notification) {
+        let notificationHTML = `
+          <div class="notification ${notification.priority}" id="notification-${notification.id}">
+            <button class="dismiss-btn" data-id="${notification.id}">Dismiss</button>
+            <h4>${notification.title}</h4>
+            <p>${notification.message}</p>
+          </div>
+        `;
+
+        if (notification.priority === "high") {
+          $("#highBox").append(notificationHTML);
+          highCount++;
+        } else if (notification.priority === "medium") {
+          $("#mediumBox").append(notificationHTML);
+          mediumCount++;
+        } else if (notification.priority === "low") {
+          $("#lowBox").append(notificationHTML);
+          lowCount++;
+        }
+      });
+
+      if (highCount === 0) {
+        $("#highBox").html("<p class='empty-msg'>No high priority notifications.</p>");
+      }
+
+      if (mediumCount === 0) {
+        $("#mediumBox").html("<p class='empty-msg'>No medium priority notifications.</p>");
+      }
+
+      if (lowCount === 0) {
+        $("#lowBox").html("<p class='empty-msg'>No low priority notifications.</p>");
+      }
+
+      $("#activeCount").text(activeNotifications.length);
+    }
+
+    function autoHideLowPriority() {
+      setTimeout(function () {
+        notifications.forEach(function (notification) {
+          if (notification.priority === "low" && !dismissedIds.includes(notification.id)) {
+            dismissedIds.push(notification.id);
+          }
+        });
+
+        localStorage.setItem("dismissedNotifications", JSON.stringify(dismissedIds));
+
+        displayNotifications();
+
+      }, 5000);
+    }
+  </script>
+
+</body>
+</html>

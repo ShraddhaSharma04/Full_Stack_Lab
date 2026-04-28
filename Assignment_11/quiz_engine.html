@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JSON Based Quiz Engine</title>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 30px;
+    }
+
+    .container {
+      width: 75%;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .timer-box {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #c0392b;
+      margin-bottom: 20px;
+    }
+
+    .question-box {
+      background: #fafafa;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 5px solid #2c3e50;
+    }
+
+    .option {
+      display: block;
+      background: white;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .option:hover {
+      background: #f0f4f8;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 18px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1a252f;
+    }
+
+    .result-box {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .answer-card {
+      padding: 15px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      background: #fafafa;
+      border-left: 5px solid #999;
+    }
+
+    .correct {
+      border-left-color: #27ae60;
+      background: #e8ffe8;
+    }
+
+    .incorrect {
+      border-left-color: #c0392b;
+      background: #ffecec;
+    }
+
+    .not-attempted {
+      border-left-color: #f39c12;
+      background: #fff3cd;
+    }
+
+    .score {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>JSON Based Quiz Engine</h2>
+
+    <div id="quizArea">
+      <div class="timer-box">
+        Time Left: <span id="timer">10</span> seconds
+      </div>
+
+      <div id="questionBox" class="question-box"></div>
+
+      <button id="nextBtn">Next</button>
+    </div>
+
+    <div id="resultBox" class="result-box"></div>
+  </div>
+
+  <script>
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+    let timeLeft = 10;
+    let timerInterval;
+
+    $(document).ready(function () {
+      $.ajax({
+        url: "quiz_questions.json",
+        method: "GET",
+        dataType: "json",
+        success: function (data) {
+          questions = data;
+          showQuestion();
+        },
+        error: function () {
+          $("#questionBox").html("<p class='error'>Unable to load quiz_questions.json file.</p>");
+          $("#nextBtn").hide();
+        }
+      });
+
+      $("#nextBtn").click(function () {
+        saveAnswer();
+        goToNextQuestion();
+      });
+    });
+
+    function showQuestion() {
+      clearInterval(timerInterval);
+
+      timeLeft = 10;
+      $("#timer").text(timeLeft);
+
+      let question = questions[currentQuestionIndex];
+
+      let output = `
+        <h3>Question ${currentQuestionIndex + 1} of ${questions.length}</h3>
+        <p><strong>${question.question}</strong></p>
+      `;
+
+      question.options.forEach(function (option) {
+        output += `
+          <label class="option">
+            <input type="radio" name="answer" value="${option}">
+            ${option}
+          </label>
+        `;
+      });
+
+      $("#questionBox").html(output);
+
+      if (currentQuestionIndex === questions.length - 1) {
+        $("#nextBtn").text("Submit Quiz");
+      } else {
+        $("#nextBtn").text("Next");
+      }
+
+      startTimer();
+    }
+
+    function startTimer() {
+      timerInterval = setInterval(function () {
+        timeLeft--;
+        $("#timer").text(timeLeft);
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          saveAnswer();
+          goToNextQuestion();
+        }
+      }, 1000);
+    }
+
+    function saveAnswer() {
+      let selectedAnswer = $("input[name='answer']:checked").val();
+
+      if (selectedAnswer === undefined) {
+        selectedAnswer = "Not Attempted";
+      }
+
+      userAnswers[currentQuestionIndex] = selectedAnswer;
+    }
+
+    function goToNextQuestion() {
+      currentQuestionIndex++;
+
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      clearInterval(timerInterval);
+
+      $("#quizArea").hide();
+      $("#resultBox").show();
+
+      let score = 0;
+      let resultHTML = "";
+
+      questions.forEach(function (question, index) {
+        let userAnswer = userAnswers[index];
+
+        if (userAnswer === question.answer) {
+          score++;
+        }
+
+        let cardClass = "";
+
+        if (userAnswer === question.answer) {
+          cardClass = "correct";
+        } else if (userAnswer === "Not Attempted") {
+          cardClass = "not-attempted";
+        } else {
+          cardClass = "incorrect";
+        }
+
+        resultHTML += `
+          <div class="answer-card ${cardClass}">
+            <p><strong>Question ${index + 1}:</strong> ${question.question}</p>
+            <p><strong>Your Answer:</strong> ${userAnswer}</p>
+            <p><strong>Correct Answer:</strong> ${question.answer}</p>
+          </div>
+        `;
+      });
+
+      $("#resultBox").html(`
+        <div class="score">Your Score: ${score} / ${questions.length}</div>
+        <h3>Answer Summary</h3>
+        ${resultHTML}
+      `);
+    }
+  </script>
+
+</body>
+</html>
