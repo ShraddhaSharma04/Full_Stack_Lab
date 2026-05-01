@@ -2,78 +2,61 @@
 <html>
 <head>
     <title>Student Registration System</title>
+    <link rel="stylesheet" href="style.css">
 
     <script>
         function validateForm() {
-            let name = document.forms["studentForm"]["name"].value;
-            let email = document.forms["studentForm"]["email"].value;
-            let age = document.forms["studentForm"]["age"].value;
+            let name = document.forms["studentForm"]["name"].value.trim();
+            let email = document.forms["studentForm"]["email"].value.trim();
+            let age = document.forms["studentForm"]["age"].value.trim();
             let course = document.forms["studentForm"]["course"].value;
-            let password = document.forms["studentForm"]["password"].value;
-
-            if (name == "" || email == "" || age == "" || course == "" || password == "") {
-                alert("All fields are required.");
-                return false;
-            }
+            let password = document.forms["studentForm"]["password"].value.trim();
 
             let emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
 
-            if (!email.match(emailPattern)) {
-                alert("Please enter a valid email address.");
+            if (name === "") {
+                alert("Name is required");
                 return false;
             }
 
-            if (age < 16 || age > 60) {
-                alert("Age must be between 16 and 60.");
+            if (email === "") {
+                alert("Email is required");
+                return false;
+            }
+
+            if (!email.match(emailPattern)) {
+                alert("Enter a valid email address");
+                return false;
+            }
+
+            if (age === "") {
+                alert("Age is required");
+                return false;
+            }
+
+            if (age <= 0) {
+                alert("Age must be greater than 0");
+                return false;
+            }
+
+            if (course === "") {
+                alert("Please select a course");
+                return false;
+            }
+
+            if (password === "") {
+                alert("Password is required");
                 return false;
             }
 
             if (password.length < 6) {
-                alert("Password must be at least 6 characters long.");
+                alert("Password must be at least 6 characters");
                 return false;
             }
 
             return true;
         }
     </script>
-
-    <style>
-        body {
-            font-family: Arial;
-            background-color: #f2f2f2;
-        }
-
-        .container {
-            width: 400px;
-            margin: 50px auto;
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        h2 {
-            text-align: center;
-        }
-    </style>
 </head>
 
 <body>
@@ -81,16 +64,22 @@
 <div class="container">
     <h2>Student Registration</h2>
 
-    <form name="studentForm" action="register.php" method="POST" onsubmit="return validateForm()">
+    <?php
+    if (isset($_GET['error'])) {
+        echo "<div class='error'>" . htmlspecialchars($_GET['error']) . "</div>";
+    }
+    ?>
+
+    <form name="studentForm" method="POST" action="register.php" onsubmit="return validateForm()">
 
         <label>Name:</label>
-        <input type="text" name="name" required>
+        <input type="text" name="name" placeholder="Enter student name" required>
 
         <label>Email:</label>
-        <input type="email" name="email" required>
+        <input type="email" name="email" placeholder="Enter email" required>
 
         <label>Age:</label>
-        <input type="number" name="age" required>
+        <input type="number" name="age" placeholder="Enter age" required>
 
         <label>Course:</label>
         <select name="course" required>
@@ -99,10 +88,11 @@
             <option value="BCA">BCA</option>
             <option value="MCA">MCA</option>
             <option value="B.Sc IT">B.Sc IT</option>
+            <option value="M.Tech">M.Tech</option>
         </select>
 
         <label>Password:</label>
-        <input type="password" name="password" required>
+        <input type="password" name="password" placeholder="Enter password" required>
 
         <button type="submit">Register</button>
 
