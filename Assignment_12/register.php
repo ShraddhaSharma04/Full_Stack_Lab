@@ -1,5 +1,5 @@
 <?php
-include "db.php";
+require_once __DIR__ . "/db.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -9,60 +9,78 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $course = trim($_POST["course"]);
     $password = trim($_POST["password"]);
 
-    $errors = [];
-
+    // Server-side validation
     if (empty($name)) {
-        $errors[] = "Name is required.";
+        header("Location: index.php?error=Name is required");
+        exit();
     }
 
     if (empty($email)) {
-        $errors[] = "Email is required.";
+        header("Location: index.php?error=Email is required");
+        exit();
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Invalid email format.";
+        header("Location: index.php?error=Invalid email format");
+        exit();
     }
 
     if (empty($age)) {
-        $errors[] = "Age is required.";
-    } elseif ($age < 16 || $age > 60) {
-        $errors[] = "Age must be between 16 and 60.";
+        header("Location: index.php?error=Age is required");
+        exit();
+    } elseif (!is_numeric($age) || $age <= 0) {
+        header("Location: index.php?error=Age must be a valid positive number");
+        exit();
     }
 
     if (empty($course)) {
-        $errors[] = "Course is required.";
+        header("Location: index.php?error=Course is required");
+        exit();
     }
 
     if (empty($password)) {
-        $errors[] = "Password is required.";
+        header("Location: index.php?error=Password is required");
+        exit();
     } elseif (strlen($password) < 6) {
-        $errors[] = "Password must be at least 6 characters.";
-    }
-
-    if (!empty($errors)) {
-        echo "<h2>Invalid Input</h2>";
-        foreach ($errors as $error) {
-            echo "<p style='color:red;'>$error</p>";
-        }
-        echo "<a href='index.php'>Go Back</a>";
+        header("Location: index.php?error=Password must be at least 6 characters");
         exit();
     }
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO students (name, email, age, course, password) 
+    $sql = "INSERT INTO students (name, email, age, course, password)
             VALUES (?, ?, ?, ?, ?)";
 
     $stmt = mysqli_prepare($conn, $sql);
-
     mysqli_stmt_bind_param($stmt, "ssiss", $name, $email, $age, $course, $hashedPassword);
 
     if (mysqli_stmt_execute($stmt)) {
-        header("Location: success.php?name=$name&email=$email&age=$age&course=$course");
+        ?>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Registration Successful</title>
+            <link rel="stylesheet" href="style.css">
+        </head>
+
+        <body>
+
+        <div class="box">
+            <h2 class="success">Registration Successful</h2>
+
+            <p><b>Name:</b> <?php echo htmlspecialchars($name); ?></p>
+            <p><b>Email:</b> <?php echo htmlspecialchars($email); ?></p>
+            <p><b>Age:</b> <?php echo htmlspecialchars($age); ?></p>
+            <p><b>Course:</b> <?php echo htmlspecialchars($course); ?></p>
+
+            <a href="index.php">Register Another Student</a>
+        </div>
+
+        </body>
+        </html>
+        <?php
         exit();
     } else {
-        echo "Error: " . mysqli_error($conn);
+        header("Location: index.php?error=Data not inserted");
+        exit();
     }
-
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
 }
 ?>
